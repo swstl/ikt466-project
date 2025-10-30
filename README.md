@@ -20,3 +20,5 @@ Add new packages with:
 uv add <packagename>
 ```
 
+## run the initialisation:
+uv run python init.py

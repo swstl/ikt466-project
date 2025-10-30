@@ -1,3 +1,6 @@
+###############################################
+######### This downloades the dataset #########
+###############################################
 import kagglehub
 
 # Download the dataset from Kaggle
