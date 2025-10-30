@@ -11,6 +11,13 @@ __pycache__/
 **/kagglehub/
 **/datasets/
 
+# Data directories - organized structure
+# Ignore raw audio data and processed spectrograms but keep directory structure
+data/raw/
+data/processed/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
 # Distribution / packaging
 .Python
 build/
