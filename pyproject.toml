@@ -11,5 +11,6 @@ dependencies = [
     "pandas>=2.3.3",
     "ruff>=0.13.3",
     "soundfile>=0.13.1",
+    "torch>=2.9.0",
     "tqdm>=4.67.1",
 ]
