@@ -21,4 +21,6 @@ uv add <packagename>
 ```
 
 ## run the initialisation:
+```sh
 uv run python init.py
+```
