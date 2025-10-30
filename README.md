@@ -4,13 +4,7 @@
 
 Install [uv](https://github.com/astral-sh/uv):
 
-## Create a Virtual Environment
-
-```sh
-uv venv
-```
-
-## Sync Dependencies
+## Create venv and sync Dependencies
 
 Sync changes from `pyproject.toml` to get the newest environment:
 
