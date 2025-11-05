@@ -80,10 +80,13 @@ else:
 
 train_loader, test_loader, dataset = AudioDataset.create_loaders(
     data_dir='./data/processed/spectrograms',
-    batch_size=64,
+    batch_size=256,
     test_split=0.2,
     shuffle=True,
-    random_seed=42
+    random_seed=42,
+    # num_workers=8,
+    # pin_memory=True,
+    # persistent_workers=True
 )
 
 model = CNN(
@@ -102,3 +105,6 @@ trained_model = train(
 )
 
 summary(model, input_size=(1, 128, 32))
+
+# del train_loader
+# del test_loader

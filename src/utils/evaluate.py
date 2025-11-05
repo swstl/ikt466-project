@@ -9,15 +9,16 @@ def evaluate(model, test_loader, criterion, device):
 
     with torch.no_grad():
         for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
+            data, target = data.to(device, non_blocking=True), target.to(device, non_blocking=True)
             output = model(data)
             loss = criterion(output, target)
 
-            test_loss += loss.item()
-            _, predicted = torch.max(output.data, 1)
-            total += target.size(0)
+            batch_size = target.size(0)
+            test_loss += loss.item() * batch_size
+            _, predicted = torch.max(output, 1)
+            total += batch_size
             correct += (predicted == target).sum().item()
 
-    avg_loss = test_loss / len(test_loader)
+    avg_loss = test_loss / total 
     accuracy = 100 * correct / total
     return avg_loss, accuracy

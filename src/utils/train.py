@@ -17,7 +17,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
 
     for _, (data, target) in enumerate(train_loader):
         # move data to device (GPU/CPU)
-        data, target = data.to(device), target.to(device)
+        data, target = data.to(device, non_blocking=True), target.to(device, non_blocking=True)
 
         # zero the gradients
         optimizer.zero_grad()
@@ -47,7 +47,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
 
 # main training loop
 def train(model, train_loader, test_loader, epochs=10, lr=0.001):
-    model = model.to(device)
+    model = model.to(device, non_blocking=True)
 
     # loss function and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -83,4 +83,5 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
         print("-" * 60)
 
 
+    writer.close()
     return model

@@ -11,7 +11,6 @@ import torch
 
 
 
-
 # Download the dataset from Kaggle
 def download_dataset():
     """ Downloads the Google Speech Commands dataset from Kaggle """
@@ -52,7 +51,7 @@ class AudioDataset(Dataset):
         return data_tensor, label_tensor
 
     @classmethod
-    def create_loaders(cls, data_dir, batch_size=64, test_split=0.2, shuffle=True, random_seed=42):
+    def create_loaders(cls, data_dir, batch_size=64, test_split=0.2, shuffle=True, random_seed=42, num_workers=1, pin_memory=False, persistent_workers=False):
         dataset = cls(data_dir)
         total_size = len(dataset)
         test_size = int(total_size * test_split)
@@ -61,7 +60,21 @@ class AudioDataset(Dataset):
         generator = Generator().manual_seed(random_seed)
         train_set, test_set = random_split(dataset, [train_size, test_size], generator=generator)
 
-        train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=shuffle)
-        test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
+        train_loader = DataLoader(
+            train_set,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            num_workers=num_workers,
+            pin_memory=pin_memory,
+            persistent_workers=persistent_workers if num_workers > 0 else False
+        )
+        test_loader = DataLoader(
+            test_set,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
+            pin_memory=pin_memory,
+            persistent_workers=persistent_workers if num_workers > 0 else False
+        )
 
         return train_loader, test_loader, dataset
