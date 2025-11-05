@@ -62,15 +62,23 @@ def load_dataset(data_dir, test_size=0.2, random_state=42):
     
     print(f"Total samples: {len(file_paths)}")
     
-    train_paths, test_paths, train_labels, test_labels = train_test_split(
-        file_paths, labels, test_size=test_size, random_state=random_state, 
+    # First split: separate test set (20%)
+    train_val_paths, test_paths, train_val_labels, test_labels = train_test_split(
+        file_paths, labels, test_size=test_size, random_state=random_state,
         stratify=labels
     )
     
+    # Second split: separate validation from training (20% of train_val = 16% of total)
+    train_paths, val_paths, train_labels, val_labels = train_test_split(
+        train_val_paths, train_val_labels, test_size=0.2, random_state=random_state,
+        stratify=train_val_labels
+    )
+    
     print(f"Train samples: {len(train_paths)}")
+    print(f"Validation samples: {len(val_paths)}")
     print(f"Test samples: {len(test_paths)}")
     
-    return train_paths, test_paths, train_labels, test_labels, label_map
+    return train_paths, val_paths, test_paths, train_labels, val_labels, test_labels, label_map
 
 
 def train_epoch(model, loader, criterion, optimizer, device):
@@ -145,17 +153,24 @@ def main():
     os.makedirs(config['checkpoint_dir'], exist_ok=True)
     os.makedirs(config['results_dir'], exist_ok=True)
     
-    train_paths, test_paths, train_labels, test_labels, label_map = load_dataset(
+    train_paths, val_paths, test_paths, train_labels, val_labels, test_labels, label_map = load_dataset(
         config['data_dir'], test_size=0.2, random_state=42
     )
     
     train_dataset = MFCCDataset(train_paths, train_labels, config['max_length'])
+    val_dataset = MFCCDataset(val_paths, val_labels, config['max_length'])
     test_dataset = MFCCDataset(test_paths, test_labels, config['max_length'])
     
     train_loader = DataLoader(
         train_dataset, 
         batch_size=config['batch_size'], 
         shuffle=True,
+        num_workers=0
+    )
+    val_loader = DataLoader(
+        val_dataset, 
+        batch_size=config['batch_size'], 
+        shuffle=False,
         num_workers=0
     )
     test_loader = DataLoader(
@@ -200,7 +215,7 @@ def main():
         )
         
         val_loss, val_acc, val_preds, val_labels = validate(
-            model, test_loader, criterion, config['device']
+            model, val_loader, criterion, config['device']
         )
         
         scheduler.step(val_acc)
@@ -230,7 +245,10 @@ def main():
     print("Final Evaluation")
     print("="*60)
     
-    checkpoint = torch.load(os.path.join(config['checkpoint_dir'], 'best_lstm.pth'))
+    checkpoint = torch.load(
+        os.path.join(config['checkpoint_dir'], 'best_lstm.pth'),
+        map_location=config['device']
+    )
     model.load_state_dict(checkpoint['model_state_dict'])
     
     _, final_acc, final_preds, final_labels = validate(
