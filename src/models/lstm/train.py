@@ -74,7 +74,6 @@ def load_dataset(data_dir, test_size=0.2, random_state=42):
 
 
 def train_epoch(model, loader, criterion, optimizer, device):
-    """Train one epoch."""
     model.train()
     total_loss = 0
     correct = 0
@@ -98,7 +97,6 @@ def train_epoch(model, loader, criterion, optimizer, device):
 
 
 def validate(model, loader, criterion, device):
-    """Validate model."""
     model.eval()
     total_loss = 0
     all_preds = []
@@ -122,7 +120,6 @@ def validate(model, loader, criterion, device):
 
 
 def main():
-    # Configuration
     config = {
         'input_size': 13,
         'hidden_size': 128,
@@ -274,10 +271,10 @@ def main():
     plt.tight_layout()
     plot_path = os.path.join(config['results_dir'], 'lstm_training_curves.png')
     plt.savefig(plot_path, dpi=150)
-    print(f"\n✓ Training curves saved to: {plot_path}")
+    print(f"\nTraining curves saved to: {plot_path}")
     
     print("\n" + "="*60)
-    print("✓ Training Complete!")
+    print("Training Complete!")
     print("="*60)
     print(f"Best model saved to: {config['checkpoint_dir']}/best_lstm.pth")
     print(f"Results saved to: {config['results_dir']}/")
