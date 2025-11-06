@@ -1,12 +1,13 @@
 ########################################
 #########        Imports       #########
 ########################################
-from src.data.preprocessing import AudioPreprocessor
-from src.data.dataset import download_dataset 
-from src.data.dataset import AudioDataset
-from src.utils.train import train
+from data.preprocessing import AudioPreprocessor
+from data.dataset import download_dataset 
+from data.dataset import AudioDataset
+from utils.train import train
 from torchsummary import summary
-from src.models.cnn import CNN
+from models.cnn import CNN
+from models.lstm import LSTM 
 
 import shutil
 import os
@@ -79,29 +80,31 @@ else:
 ######################################
 
 train_loader, test_loader, dataset = AudioDataset.create_loaders(
-    data_dir='../data/processed/spectrograms',
+    data_dir='../data/processed/mfcc',
     batch_size=256,
     test_split=0.2,
     shuffle=True,
-    random_seed=39,
+    random_seed=38,
     # does nothing on cpu:
     num_workers=40,
     pin_memory=True,
     persistent_workers=True
 )
 
-model = CNN(
-    input_channels=1,
-    num_classes=len(dataset.classes),
-    H=128,
-    W=32
-)
+# model = CNN(
+#     input_channels=1,
+#     num_classes=len(dataset.classes),
+#     H=128,
+#     W=32
+# )
+
+model = LSTM()
 
 trained_model = train(
     model,
     train_loader,
     test_loader,
-    epochs=100,
+    epochs=50,
     lr=0.001
 )
 

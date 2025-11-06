@@ -71,8 +71,8 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
         test_loss, test_acc = evaluate(model, test_loader, criterion, device)
 
         # log to TensorBoard
-        # writer.add_scalar('Loss/train', train_loss, epoch)
-        # writer.add_scalar('Accuracy/train', train_acc, epoch)
+        writer.add_scalar('Loss/train', train_loss, epoch)
+        writer.add_scalar('Accuracy/train', train_acc, epoch)
         writer.add_scalar('Loss/test', test_loss, epoch)
         writer.add_scalar('Accuracy/test', test_acc, epoch)
 
