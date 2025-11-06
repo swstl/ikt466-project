@@ -3,7 +3,7 @@
 ########################################
 from data.preprocessing import AudioPreprocessor
 from data.dataset import download_dataset 
-from data.dataset import AudioDataset
+from data.dataset import create_loaders, SpectroDataset, MFCCDataset 
 from utils.train import train
 from torchsummary import summary
 from models.cnn import CNN
@@ -79,8 +79,8 @@ else:
 #########  Train the models  #########
 ######################################
 
-train_loader, test_loader, dataset = AudioDataset.create_loaders(
-    data_dir='../data/processed/mfcc',
+train_loader, test_loader, dataset = create_loaders(
+    dataset_class=MFCCDataset,
     batch_size=256,
     test_split=0.2,
     shuffle=True,
@@ -98,7 +98,13 @@ train_loader, test_loader, dataset = AudioDataset.create_loaders(
 #     W=32
 # )
 
-model = LSTM()
+model = LSTM(
+    input_size=13,
+    hidden_size=128,
+    num_layers=2,
+    num_classes=len(dataset.classes),
+    dropout=0.3
+)
 
 trained_model = train(
     model,
@@ -108,7 +114,8 @@ trained_model = train(
     lr=0.001
 )
 
-summary(model, input_size=(1, 128, 32))
+# summary(model, input_size=(1, 128, 32))
+summary(model, input_size=(32, 13))
 
 del train_loader
 del test_loader
