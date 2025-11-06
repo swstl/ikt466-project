@@ -21,7 +21,7 @@ class GRU(nn.Module):
         )
     
     def forward(self, x):
-        gru_out, h_n = self.gru_layer(x)
+        _, h_n = self.gru_layer(x)
 
         out = h_n[-1]
 
