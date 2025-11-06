@@ -9,6 +9,8 @@ import numpy as np
 import kagglehub
 import torch
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 
 # Download the dataset from Kaggle
@@ -52,6 +54,11 @@ class AudioDataset(Dataset):
 
     @classmethod
     def create_loaders(cls, data_dir, batch_size=64, test_split=0.2, shuffle=True, random_seed=42, num_workers=1, pin_memory=False, persistent_workers=False):
+        if device.type == 'cpu':
+            num_workers = 0
+            pin_memory = False
+            persistent_workers = False
+
         dataset = cls(data_dir)
         total_size = len(dataset)
         test_size = int(total_size * test_split)

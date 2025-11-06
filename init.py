@@ -83,10 +83,11 @@ train_loader, test_loader, dataset = AudioDataset.create_loaders(
     batch_size=256,
     test_split=0.2,
     shuffle=True,
-    random_seed=42,
-    # num_workers=8,
-    # pin_memory=True,
-    # persistent_workers=True
+    random_seed=39,
+    # does nothing on cpu:
+    num_workers=40,
+    pin_memory=True,
+    persistent_workers=True
 )
 
 model = CNN(
@@ -100,11 +101,11 @@ trained_model = train(
     model,
     train_loader,
     test_loader,
-    epochs=10,
+    epochs=100,
     lr=0.001
 )
 
 summary(model, input_size=(1, 128, 32))
 
-# del train_loader
-# del test_loader
+del train_loader
+del test_loader
