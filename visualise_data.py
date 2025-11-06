@@ -31,16 +31,22 @@ def visualize():
     print(f"MFCC shape: {mfcc.shape}")
     print(f"Spectrogram shape: {spec.shape}")
     
+    hop_length = 512
+    sample_rate = 16000
+    duration = (spec.shape[1] * hop_length) / sample_rate
+    print(f"Calculated duration from spectrogram: {duration:.2f} seconds")
+    print(f"Number of time frames: {spec.shape[1]}")
+    
     plt.figure(figsize=(12, 5))
     
     plt.subplot(1, 2, 1)
-    librosa.display.specshow(mfcc.T, x_axis='time', cmap='viridis')
+    librosa.display.specshow(mfcc.T, x_axis='time', hop_length=hop_length, sr=sample_rate, cmap='viridis')
     plt.colorbar()
     plt.title(f'MFCC - {class_name}')
     plt.ylabel('MFCC Coefficients')
     
     plt.subplot(1, 2, 2)
-    librosa.display.specshow(spec, x_axis='time', y_axis='mel', cmap='viridis')
+    librosa.display.specshow(spec, x_axis='time', y_axis='mel', hop_length=hop_length, sr=sample_rate, cmap='viridis')
     plt.colorbar(format='%+2.0f dB')
     plt.title(f'Mel Spectrogram - {class_name}')
     
