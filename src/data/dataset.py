@@ -44,8 +44,20 @@ class AudioDataset(Dataset):
     def __getitem__(self, idx):
         file_path, label = self.samples[idx]
         data = np.load(file_path)
+        
+        # Handle different data types:
+        # - MFCC data is 2D (time_steps, features) - keep as is for RNNs
+        # - Spectrogram data is 2D (freq_bins, time_steps) - add channel dim for CNNs
         if len(data.shape) == 2:
-            data = np.expand_dims(data, axis=0)
+            # Check if this looks like MFCC data (typically has 13 features)
+            # or spectrogram data (typically has more frequency bins)
+            if data.shape[1] <= 20:  # Likely MFCC data (13 features)
+                # Keep 2D for RNN models (will become 3D when batched)
+                pass
+            else:  # Likely spectrogram data
+                # Add channel dimension for CNN models
+                data = np.expand_dims(data, axis=0)
+                
         data_tensor = torch.tensor(data, dtype=torch.float32)
         label_tensor = torch.tensor(label, dtype=torch.long)
         if self.transform:

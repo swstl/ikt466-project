@@ -8,6 +8,7 @@ from utils.train import train
 from torchsummary import summary
 from models.cnn import CNN
 from models.lstm import LSTM 
+from models.gru import GRU
 
 import shutil
 import os
@@ -98,7 +99,21 @@ train_loader, test_loader, dataset = AudioDataset.create_loaders(
 #     W=32
 # )
 
-model = LSTM()
+# model = LSTM(
+#     input_size=13,
+#     hidden_size=128,
+#     num_layers=2,
+#     num_classes=len(dataset.classes),
+#     dropout=0.3
+# )
+
+model = GRU(
+    input_size=13,
+    hidden_size=128,
+    num_layers=2,
+    num_classes=len(dataset.classes),
+    dropout=0.3
+)
 
 trained_model = train(
     model,
@@ -108,7 +123,10 @@ trained_model = train(
     lr=0.001
 )
 
-summary(model, input_size=(1, 128, 32))
+# Use correct input size for GRU model (sequence_length, input_features)
+# For MFCC data: typically (time_steps, 13_features)
+# Common sequence length for 1 second audio at 16kHz with hop_length=512 is about 32 frames
+summary(model, input_size=(32, 13))
 
 del train_loader
 del test_loader
