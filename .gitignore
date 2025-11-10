@@ -18,6 +18,7 @@ data/processed/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 runs/
+trained/
 
 # Distribution / packaging
 .Python

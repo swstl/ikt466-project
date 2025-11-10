@@ -279,7 +279,7 @@ class AudioPreprocessor:
         # Get the project root (assumes this file is in src/data/)
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(os.path.dirname(current_dir))
-        return os.path.join(project_root, "data", "processed", "spectrograms")
+        return os.path.join(project_root, "data", "processed", "spectrograms2")
     
     def process_dataset_mfcc(self, 
                              dataset_path: str, 
@@ -427,7 +427,7 @@ if __name__ == "__main__":
     print("STEP 1: Processing spectrograms (for CNN)")
     print("="*60)
     spectrograms = preprocessor.process_dataset_auto(
-        spectrogram_type='mel',
+        spectrogram_type='stft',
         skip_existing=True
     )
     

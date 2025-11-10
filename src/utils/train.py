@@ -5,6 +5,7 @@ from src.utils.evaluate import evaluate
 import torch
 import torch.nn as nn
 import time
+import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -60,11 +61,13 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
     print(f"Training on {device}")
     print("-" * 60)
 
+    best_weights = None
+    best_acc = 0
+
     for epoch in range(epochs):
         epoch_time = time.time()
         # train
         train_loss, train_acc = train_one_epoch(model, train_loader, optimizer, criterion, device)
-
         epoch_time = time.time() - epoch_time
 
         # evaluate
@@ -82,6 +85,15 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
         print(f"  Training Time (epoch): {epoch_time:.2f} seconds")
         print("-" * 60)
 
+        if test_acc > best_acc:
+            best_acc = test_acc
+            best_weights = model.state_dict()
+
 
     writer.close()
+
+    os.makedirs('trained', exist_ok=True)
+    model_path = f'trained/{model.name}_{timestamp}_{best_acc:.2f}.pth'
+    torch.save(best_weights, model_path)
+    print(f"Model saved to {model_path}")
     return model

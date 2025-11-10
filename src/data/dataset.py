@@ -133,4 +133,7 @@ def create_loaders(dataset_class, batch_size=64, test_split=0.2, shuffle=True,
         persistent_workers=persistent_workers if num_workers > 0 else False
     )
 
-    return train_loader, test_loader, dataset
+    sample, _ = dataset[0]
+    shape = sample.shape
+
+    return train_loader, test_loader, dataset, shape

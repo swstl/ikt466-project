@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import librosa.display
 
 def find_random_sample():
-    mfcc_dir = 'data/processed/mfcc'
-    spec_dir = 'data/processed/spectrograms'
+    mfcc_dir = '../../data/processed/mfcc'
+    spec_dir = '../../data/processed/spectrograms'
     
     classes = [d for d in os.listdir(mfcc_dir) if os.path.isdir(os.path.join(mfcc_dir, d))]
     random_class = random.choice(classes)
@@ -50,6 +50,16 @@ def visualize():
     plt.colorbar(format='%+2.0f dB')
     plt.title(f'Mel Spectrogram - {class_name}')
     
+    plt.tight_layout()
+    plt.show()
+
+def visualize_single(spectrogram):
+    plt.figure(figsize=(10, 4))
+    plt.imshow(spectrogram, aspect='auto', origin='lower', cmap='viridis')
+    plt.colorbar(format='%+2.0f dB')
+    plt.title('Mel Spectrogram - Predicted')
+    plt.ylabel('Mel Frequency Bins')
+    plt.xlabel('Time Frames')
     plt.tight_layout()
     plt.show()
 
