@@ -46,10 +46,8 @@ def create_model(model_name: str, **kwargs):
     elif '_' in model_name:
         file_name, class_name = model_name.rsplit('_', 1)
     else:
-        raise ValueError(
-            f"Model name must be in format 'filename.ClassName' or 'filename_ClassName'. "
-            f"Got: {model_name}\n\nAvailable models:\n{format_available_models()}"
-        )
+        file_name = model_name.lower()
+        class_name = model_name.upper()
 
     try:
         # Import module

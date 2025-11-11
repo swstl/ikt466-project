@@ -9,10 +9,11 @@ from models import create_model
 from torchinfo import summary
 from utils.predict import predict
 
-
 import shutil
 import torch
 import os
+
+
 
 
 
@@ -94,7 +95,7 @@ train_loader, test_loader, dataset, shape = create_loaders(
     persistent_workers=True
 )
 
-model = create_model("cnn.CNN_Wide",
+model = create_model("CNN",
     # CNN
     input_channels=shape[0],
     num_classes=len(dataset.classes),
@@ -109,13 +110,16 @@ model = create_model("cnn.CNN_Wide",
     # dropout=0.3
 )
 
-# trained_model = train(
-#     model,
-#     train_loader,
-#     test_loader,
-#     epochs=1,
-#     lr=0.001
-# )
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model.load_state_dict(torch.load('trained/CNN_20251111_120052_94.50.pth', map_location=device))
+
+trained_model = train(
+    model,
+    train_loader,
+    test_loader,
+    epochs=50,
+    lr=0.001
+)
 
 summary(model, input_size=(1, *shape))
 
@@ -125,10 +129,13 @@ del test_loader
 
 
 
+
+
 ############################################
 #########  TESTING THE MODEL HERE  #########
 ############################################
 # model evaluation mode: set model weights
+exit()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.load_state_dict(torch.load('trained/CNN_20251110_122117_95.23.pth', map_location=device))
 model.eval()
@@ -137,7 +144,7 @@ predicted, confidence = predict(
     model,
     preprocessor,
     dataset,
-    "../data/kramsen/sheila.wav",
+    "../data/kramsen/linor-sier-cat.ogg",
     threshold=0.02
 )
 

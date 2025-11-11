@@ -27,10 +27,7 @@ class CNN(nn.Module):
         self.fc1 = nn.Linear(256 * final_h * final_w, 512)
 
         self.dropout1 = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(512, 256)
-
-        self.dropout2 = nn.Dropout(0.5)
-        self.fc3 = nn.Linear(256, num_classes)
+        self.fc2 = nn.Linear(512, num_classes)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -59,10 +56,6 @@ class CNN(nn.Module):
 
         x = self.dropout1(x)
         x = self.fc2(x)
-        x = F.relu(x)
-
-        x = self.dropout2(x)
-        x = self.fc3(x)
 
         return x
 
@@ -72,7 +65,7 @@ class CNN_Wide(nn.Module):
     def __init__(self, input_channels=1, num_classes=30, H=128, W=32):
         super(CNN_Wide, self).__init__()
         self.name = "CNN_Wide"
-        
+
         # More filters: 64 -> 128 -> 256 -> 512
         self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(64)
@@ -83,25 +76,30 @@ class CNN_Wide(nn.Module):
         self.conv4 = nn.Conv2d(256, 512, kernel_size=3, padding=1)
         self.bn4 = nn.BatchNorm2d(512)
         self.pool = nn.MaxPool2d(2, 2)
-        
+
         final_h = H // 16
         final_w = W // 16
-        
+
         self.fc1 = nn.Linear(512 * final_h * final_w, 1024)
         self.dropout = nn.Dropout(0.5)
         self.fc2 = nn.Linear(1024, num_classes)
-    
+
     def forward(self, x):
         x = F.relu(self.bn1(self.conv1(x)))
         x = self.pool(x)
+
         x = F.relu(self.bn2(self.conv2(x)))
         x = self.pool(x)
+
         x = F.relu(self.bn3(self.conv3(x)))
         x = self.pool(x)
+
         x = F.relu(self.bn4(self.conv4(x)))
         x = self.pool(x)
+
         x = x.view(x.size(0), -1)
         x = F.relu(self.fc1(x))
+
         x = self.dropout(x)
         x = self.fc2(x)
         return x
