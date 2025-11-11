@@ -412,37 +412,42 @@ def create_preprocessor(config: dict = None) -> AudioPreprocessor:
     
     return AudioPreprocessor(**config)
 
-# Example usage
-if __name__ == "__main__":
-    # Example configuration for Google Speech Commands dataset
+def process_audio():
     preprocessor = AudioPreprocessor(
         sample_rate=16000,
         n_mels=128,
         n_fft=2048,
         hop_length=512,
-        target_length=16000  # 1 second at 16kHz
+        target_length=16000
     )
-    
+
     print("="*60)
     print("STEP 1: Processing spectrograms (for CNN)")
     print("="*60)
     spectrograms = preprocessor.process_dataset_auto(
-        spectrogram_type='stft',
+        spectrogram_type='mel',
         skip_existing=True
     )
-    
+
     total_files = sum(len(specs) for specs in spectrograms.values())
     print(f"\nSpectrograms processed: {total_files} files")
     print(f"Classes: {list(spectrograms.keys())}")
-    
+
     print("\n" + "="*60)
     print("STEP 2: Processing MFCC features (for LSTM)")
     print("="*60)
     preprocessor.process_dataset_mfcc_auto(n_mfcc=13)
-    
+
     print("\n" + "="*60)
     print("✓ All preprocessing complete!")
     print("="*60)
     print("Spectrograms saved to: data/processed/spectrograms/")
     print("MFCC features saved to: data/processed/mfcc/")
     print("="*60)
+
+    return preprocessor 
+
+
+# Example usage
+if __name__ == "__main__":
+    process_audio()

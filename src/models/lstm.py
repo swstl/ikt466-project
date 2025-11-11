@@ -1,10 +1,10 @@
 import torch.nn as nn
+from data.dataset import MFCCDataset
+from models.base import BASE
 
-class LSTM(nn.Module):
-    def __init__(self, input_size=13, hidden_size=128, num_layers=2, num_classes=10, dropout=0.3):
+class LSTM(BASE):
+    def __init__(self, input_size=13, hidden_size=128, num_layers=2, num_classes=30, dropout=0.3):
         super(LSTM, self).__init__()
-        self.name = "LSTM"
-        
         self.hidden_size = hidden_size
         self.num_layers = num_layers
 
@@ -29,3 +29,7 @@ class LSTM(nn.Module):
         out = self.classifier(out)
         
         return out
+
+    @classmethod
+    def supported_dataset(cls):
+        return MFCCDataset 

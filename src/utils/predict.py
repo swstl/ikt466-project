@@ -1,7 +1,8 @@
 import torch
 from utils.audio import extract_centered_clip
 
-def predict(model, preprocessor, dataset, audio_path, threshold=0.02):
+def predict(model, preprocessor, audio_path, threshold=0.02):
+    dataset = model.dataset
 
     extracted = extract_centered_clip(audio_path, threshold)
     if extracted is None:
