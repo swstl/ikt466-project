@@ -1,6 +1,7 @@
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 from src.utils.evaluate import evaluate 
+from torchinfo import summary
 
 import torch
 import torch.nn as nn
@@ -47,8 +48,10 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
 
 
 # main training loop
-def train(model, train_loader, test_loader, epochs=10, lr=0.001):
+def train(model, epochs=10, lr=0.001):
     model = model.to(device, non_blocking=True)
+    train_loader = model.train_loader
+    test_loader = model.test_loader
 
     # loss function and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -56,7 +59,7 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
 
     # create TensorBoard writer with timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    writer = SummaryWriter(f'runs/{model.name}_{timestamp}')
+    writer = SummaryWriter(f'runs/{model.get_name()}_{timestamp}')
 
     print(f"Training on {device}")
     print("-" * 60)
@@ -93,7 +96,13 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
     writer.close()
 
     os.makedirs('trained', exist_ok=True)
-    model_path = f'trained/{model.name}_{timestamp}_{best_acc:.2f}.pth'
+    model_path = f'trained/{model.get_name()}_{timestamp}_{best_acc:.2f}.pth'
     torch.save(best_weights, model_path)
     print(f"Model saved to {model_path}")
+
+    del train_loader
+    del test_loader
+
+    shape = model.data_shape
+    summary(model, input_size=(1, *shape))
     return model

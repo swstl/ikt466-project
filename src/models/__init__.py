@@ -3,6 +3,8 @@ import inspect
 from pathlib import Path
 from typing import Dict, List
 
+from data.dataset import SpectroDataset, create_loaders
+
 def list_available_models() -> Dict[str, List[str]]:
     """
     List all available models organized by file.
@@ -14,7 +16,7 @@ def list_available_models() -> Dict[str, List[str]]:
     available = {}
 
     for file in models_dir.glob('*.py'):
-        if file.stem in ['__init__', '__pycache__']:
+        if file.stem in ['__init__', '__pycache__', 'base']:
             continue
 
         try:
@@ -64,8 +66,37 @@ def create_model(model_name: str, **kwargs):
                 f"Available classes: {available_classes}"
             )
 
-        # Instantiate
-        return model_class(**kwargs)
+        train_loader, test_loader, dataset, shape = create_loaders(
+            dataset_class=model_class.supported_dataset(),
+            batch_size=256,
+            test_split=0.2,
+            shuffle=True,
+            random_seed=39,
+
+            # does nothing on cpu:
+            num_workers=40,
+            pin_memory=True,
+            persistent_workers=True
+        )
+
+        # set parameters
+        if len(shape) == 3:
+            kwargs.setdefault('input_channels', shape[0])
+            kwargs.setdefault('H', shape[1])
+            kwargs.setdefault('W', shape[2])
+        elif len(shape) == 2:
+            kwargs.setdefault('input_size', shape[1])
+
+        kwargs.setdefault('num_classes', len(dataset.classes))
+
+        # initiate model, with its loaders
+        model = model_class(**kwargs)
+        model.train_loader = train_loader
+        model.test_loader = test_loader
+        model.dataset = dataset
+        model.data_shape = shape
+
+        return model
 
     except ModuleNotFoundError:
         raise ValueError(

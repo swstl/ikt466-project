@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+from data.dataset import MFCCDataset
+from models.base import BASE
 
-class GRU(nn.Module):
+class GRU(BASE):
     def __init__(self, input_size=13, hidden_size=128, num_layers=2, num_classes=10, dropout=0.3, bidirectional=True):
         super(GRU, self).__init__()
         
-        self.name = "GRU"
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.bidirectional = bidirectional
@@ -79,3 +79,8 @@ class GRU(nn.Module):
         out = self.classifier(attended_output)
         
         return out
+
+
+    @classmethod
+    def supported_dataset(cls):
+        return MFCCDataset 
