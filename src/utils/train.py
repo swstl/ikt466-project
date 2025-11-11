@@ -1,6 +1,7 @@
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
-from src.utils.evaluate import evaluate 
+from src.utils.evaluate import evaluate
+from src.utils.confusion_matrix import generate_confusion_matrix, print_classification_report
 
 import torch
 import torch.nn as nn
@@ -89,6 +90,15 @@ def train(model, train_loader, test_loader, epochs=10, lr=0.001):
             best_acc = test_acc
             best_weights = model.state_dict()
 
+    # Load best weights before generating confusion matrix
+    if best_weights is not None:
+        model.load_state_dict(best_weights)
+    
+    # Generate confusion matrix using the new module
+    cm_path = generate_confusion_matrix(model, test_loader, device, model.name, timestamp, best_acc)
+    
+    # Print detailed classification report
+    print_classification_report(model, test_loader, device)
 
     writer.close()
 
