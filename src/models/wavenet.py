@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class WaveNet1D(nn.Module):
-    def __init__(self, num_classes=30, input_length=16000):
+    def __init__(self, num_classes=30):
         super(WaveNet1D, self).__init__()
         self.name = "WaveNet1D"
         
