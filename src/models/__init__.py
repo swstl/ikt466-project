@@ -3,7 +3,7 @@ import inspect
 from pathlib import Path
 from typing import Dict, List
 
-from data.dataset import SpectroDataset, create_loaders
+from data.dataset import MFCCDataset, SpectroDataset, WaveNetDataset, create_loaders
 
 def list_available_models() -> Dict[str, List[str]]:
     """
@@ -33,10 +33,10 @@ def list_available_models() -> Dict[str, List[str]]:
 def create_model(model_name: str, **kwargs):
     """
     Factory function to get model by name.
-    Format: 'filename.ClassName' or 'filename_ClassName'
+    Format: 'filename.ClassName' or 'filename_ClassName' or just 'filename'
 
     Args:
-        model_name: 'filename.ClassName' or 'filename_ClassName'
+        model_name: 'filename.ClassName', 'filename_ClassName', or 'filename'
         **kwargs: Arguments to pass to the model constructor
 
     Returns:
@@ -49,18 +49,27 @@ def create_model(model_name: str, **kwargs):
         file_name, class_name = model_name.rsplit('_', 1)
     else:
         file_name = model_name.lower()
-        class_name = model_name.upper()
+        class_name = None  # Will auto-select first available class
 
     try:
         # Import module
         module = importlib.import_module(f'.{file_name.lower()}', package='models')
 
-        # Get the class
-        if hasattr(module, class_name):
+        # Get available classes
+        available_classes = [name for name, obj in inspect.getmembers(module, inspect.isclass)
+                           if obj.__module__ == module.__name__]
+
+        if not available_classes:
+            raise ValueError(f"No classes found in models/{file_name}.py")
+
+
+        if class_name is None:
+            # Auto-select first available class
+            class_name = available_classes[0]
+            model_class = getattr(module, class_name)
+        elif hasattr(module, class_name):
             model_class = getattr(module, class_name)
         else:
-            available_classes = [name for name, obj in inspect.getmembers(module, inspect.isclass)
-                               if obj.__module__ == module.__name__]
             raise ValueError(
                 f"Class '{class_name}' not found in models/{file_name}.py. "
                 f"Available classes: {available_classes}"
@@ -72,7 +81,6 @@ def create_model(model_name: str, **kwargs):
             test_split=0.2,
             shuffle=True,
             random_seed=39,
-
             # does nothing on cpu:
             num_workers=40,
             pin_memory=True,
@@ -80,11 +88,11 @@ def create_model(model_name: str, **kwargs):
         )
 
         # set parameters
-        if len(shape) == 3:
+        if type(model_class.supported_dataset()) is SpectroDataset:
             kwargs.setdefault('input_channels', shape[0])
             kwargs.setdefault('H', shape[1])
             kwargs.setdefault('W', shape[2])
-        elif len(shape) == 2:
+        elif type(model_class.supported_dataset()) is MFCCDataset:
             kwargs.setdefault('input_size', shape[1])
 
         kwargs.setdefault('num_classes', len(dataset.classes))

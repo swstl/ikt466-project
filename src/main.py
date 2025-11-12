@@ -47,7 +47,7 @@ else:
 ######################################
 #########  Train the models  #########
 ######################################
-model = create_model("cnn",
+model = create_model("wavenet",
     # hidden_size=128,
     # num_layers=2,
     # num_classes=len(dataset.classes),
@@ -56,11 +56,9 @@ model = create_model("cnn",
 
 trained_model = train(
     model,
-    epochs=1,
+    epochs=10,
     lr=0.001
 )
-
-
 
 
 

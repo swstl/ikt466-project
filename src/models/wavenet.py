@@ -1,11 +1,14 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-class WaveNet1D(nn.Module):
+from data.dataset import WaveNetDataset
+from models.base import BASE
+
+
+
+class WaveNet1D(BASE):
     def __init__(self, num_classes=30):
         super(WaveNet1D, self).__init__()
-        self.name = "WaveNet1D"
-        
         self.conv1 = nn.Conv1d(1, 64, kernel_size=80, stride=4, padding=38)
         self.bn1 = nn.BatchNorm1d(64)
         self.pool1 = nn.MaxPool1d(4)
@@ -46,3 +49,7 @@ class WaveNet1D(nn.Module):
         x = self.fc2(x)
         
         return x
+
+    @classmethod
+    def supported_dataset(cls):
+        return WaveNetDataset 
