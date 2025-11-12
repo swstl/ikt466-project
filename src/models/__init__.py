@@ -2,6 +2,7 @@ import importlib
 import inspect
 from pathlib import Path
 from typing import Dict, List
+from torchinfo import summary
 
 from data.dataset import MFCCDataset, SpectroDataset, WaveNetDataset, create_loaders
 
@@ -103,6 +104,9 @@ def create_model(model_name: str, **kwargs):
         model.test_loader = test_loader
         model.dataset = dataset
         model.data_shape = shape
+
+        print(f"Created model '{model_name}' with parameters: {kwargs}")
+        summary(model, input_size=(1, *shape))
 
         return model
 
