@@ -78,7 +78,7 @@ model.eval()
 predicted, confidence = predict(
     model,
     preprocessor,
-    "../data/kramsen/linor-sier-cat.ogg",
+    "../data/kramsen/kramsen-sier-BED.wav",
     threshold=0.02
 )
 
