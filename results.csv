@@ -1,0 +1,85 @@
+layers, accuracy, f1_score, precision, recall, loss
+
+without polling:
+1c1f, 66.40, 0.6644, 0.6665, 0.6640, 2.0218
+2c1f, 78.06, 0.7808, 0.7823, 0.7806, 1.3178
+3c1f, 83.64, 0.8366, 0.8396, 0.8364, 1.0873
+4c1f, 85.67, 0.8571, 0.8602, 0.8567, 0.8740
+5c1f, takes more than a minute to train each epoch 
+
+with polling (with batch normalization):
+1c1f, 70.32, 0.7039, 0.7064, 0.7032, 1.2857
+2c1f, 88.74, 0.8877, 0.8886, 0.8874, 0.6244
+3c1f, 93.59, 0.9361, 0.9366, 0.9359, 0.3125
+4c1f, 95.30, 0.9530, 0.9533, 0.9530, 0.2324
+5c1f, 95.80, 0.9580, 0.9583, 0.9580, 0.2210
+
+1c2f, 70.14, 0.7028, 0.7091, 0.7014, 1.0566
+2c2f, 88.59, 0.8862, 0.8871, 0.8859, 0.4953
+3c2f, 93.85, 0.9359, 0.9363, 0.9358, 0.3043
+4c2f, 94.92, 0.9493, 0.9499, 0.9492, 0.2360
+5c2f, 95.45, 0.9545, 0.9547, 0.9545, 0.2174
+
+1c3f, 69.87, 0.6985, 0.7010, 0.6987, 1.3102
+2c3f, 88.12, 0.8809, 0.8818, 0.8812, 0.6501
+3c3f, 92.95, 0.9298, 0.9303, 0.9295, 0.3421
+4c3f, 94.67, 0.9468, 0.9472, 0.9467, 0.2556
+5c3f, 95.25, 0.9526, 0.9529, 0.9525, 0.2345
+
+
+
+https://www.geeksforgeeks.org/deep-learning/tanh-vs-sigmoid-vs-relu/
+Sigmoid:
+4c1f, 93.90, 0.9392, 0.9398, 0.9390, 0.2858
+An attempt to change the activation function from ReLU to Sigmoid in a 4-layer, 1-filter model with polling resulted in a decrease in accuracy from 95.30% to 93.90%. The F1 score, precision, and recall also saw slight decreases, indicating that while the model still performs well, the ReLU activation function is more effective for this architecture in this specific task. The loss increased from 0.2324 to 0.2858, suggesting that the model's predictions are less confident with the Sigmoid activation. The time difference was pretty negligible.
+through oout the training with sigmoid, the model seemed to struggle more to converge compared to ReLU, indicating that ReLU might be a better choice for deeper networks in this context. (it went up and down a lot more than with ReLU)
+
+
+Tanh:
+4c1f, 93.90, 0.9390, 0.9393, 0.9390, 0.2747
+Switching the activation function from ReLU to Tanh in a 4-layer, 1-filter model with polling maintained the accuracy at 93.90%, similar to the Sigmoid activation. The F1 score, precision, and recall were also comparable, with minor variations. However, the loss decreased slightly to 0.2747, indicating a marginal improvement in the model's confidence in its predictions compared to Sigmoid. The training time remained similar, suggesting that Tanh does not significantly impact computational efficiency in this scenario.
+Overall, while Tanh performed slightly better than Sigmoid in terms of loss, both activation functions underperformed compared to ReLU for this specific architecture and task. The model's convergence behavior with Tanh was also more stable than with Sigmoid, but still not as effective as ReLU.
+
+
+without batch normalization:
+4c1f, 91.72, 0.9173, 0.9184, 0.9172, 0.3340
+Removing batch normalization from the 4-layer, 1-filter model with polling resulted in a noticeable decrease in performance. The accuracy dropped to 91.72% from 95.30%, and the F1 score, precision, and recall also saw significant declines. The loss increased to 0.3340, indicating that the model's predictions were less accurate and confident without batch normalization. This highlights the importance of batch normalization in stabilizing and improving the training process, leading to better overall model performance. The training time was slightly reduced, but the trade-off in accuracy and reliability was substantial.
+
+
+
+dropout:
+4c1f, 94.10, 0.9412, 0.9417, 0.9410, 0.2615
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+existing architectures:
+LeNet5, 85.50, 0.8551, 0.8565, 0.8550, 0.5369
+MobileNetV2, 93.53, 0.9355, 0.9362, 0.9353, 0.3222
+ResNet-18, 94.92, 0.9494, 0.9499, 0.9492, 0.2314
+efficientNet-B0, 93.93, 0.9393, 0.9397, 0.9393, 0.2872
+VGG16, 93.86, 0.9388, 0.9395, 0.9386, 0.2581
+5c1f, 95.80, 0.9580, 0.9583, 0.9580, 0.2210

@@ -7,6 +7,7 @@ from utils.train import train
 from models import create_model 
 from utils.predict import predict
 
+import argparse
 import shutil
 import torch
 import os
@@ -47,7 +48,9 @@ else:
 ######################################
 #########  Train the models  #########
 ######################################
-model = create_model("cnn",
+modelname = "cnn.CNN" #filename.classname
+print("training model: ", modelname)
+model = create_model(modelname,
     # hidden_size=128,
     # num_layers=2,
     # num_classes=len(dataset.classes),
@@ -56,20 +59,20 @@ model = create_model("cnn",
 
 trained_model = train(
     model,
-    epochs=2,
-    lr=0.001
+    epochs=50,
+    lr=0.0001
 )
 
 
 
 
-quit()
+# quit()
 ############################################
 #########  TESTING THE MODEL HERE  #########
 ############################################
 # model evaluation mode: set model weights
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model.load_state_dict(torch.load('trained/CNN_20251110_122117_95.23.pth', map_location=device))
+model.load_state_dict(torch.load('test_models/CNN_20251112_130409_acc:95.80.pth', map_location=device))
 model.eval()
 
 predicted, confidence = predict(

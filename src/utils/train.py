@@ -61,7 +61,7 @@ def train(model, epochs=10, lr=0.001, delete_loaders=True):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     # create TensorBoard writer with timestamp
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M')
     writer = SummaryWriter(f'runs/{model.get_name()}_{timestamp}')
 
     print(f"Training on {device}")
