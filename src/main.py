@@ -7,7 +7,6 @@ from utils.train import train
 from models import create_model 
 from utils.predict import predict
 
-import argparse
 import shutil
 import torch
 import os
@@ -60,7 +59,7 @@ model = create_model(modelname,
 trained_model = train(
     model,
     epochs=50,
-    lr=0.0001
+    lr=0.001
 )
 
 
