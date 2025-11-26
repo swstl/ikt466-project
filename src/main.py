@@ -47,16 +47,15 @@ else:
 ######################################
 #########  Train the models  #########
 ######################################
-model = create_model("cnn",
-    # hidden_size=128,
-    # num_layers=2,
-    # num_classes=len(dataset.classes),
-    # dropout=0.3
+model = create_model("gru_seq2seq.GRU_Seq2Seq",
+    hidden_size=128,
+    num_layers=2,
+    dropout=0.3
 )
 
 trained_model = train(
     model,
-    epochs=2,
+    epochs=50,
     lr=0.001
 )
 

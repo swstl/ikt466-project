@@ -6,7 +6,7 @@ import librosa.display
 
 def find_random_sample():
     mfcc_dir = '../../data/processed/mfcc'
-    spec_dir = '../../data/processed/spectrograms'
+    spec_dir = '../../data/processed/spectrograms2'
     
     classes = [d for d in os.listdir(mfcc_dir) if os.path.isdir(os.path.join(mfcc_dir, d))]
     random_class = random.choice(classes)
@@ -51,6 +51,13 @@ def visualize():
     plt.title(f'Mel Spectrogram - {class_name}')
     
     plt.tight_layout()
+    
+    # Save to file
+    output_path = '../../results/visualization.png'
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    print(f"\nVisualization saved to: {output_path}")
+    
     plt.show()
 
 def visualize_single(spectrogram):
