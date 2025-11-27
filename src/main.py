@@ -47,14 +47,12 @@ else:
 ######################################
 #########  Train the models  #########
 ######################################
-modelname = "cnn.CNN" #filename.classname
-print("training model: ", modelname)
-model = create_model(modelname,
+model = create_model("cnn.CNN", #filename.classname
     # hidden_size=128,
     # num_layers=2,
-    # num_classes=len(dataset.classes),
-    # dropout=0.3
+    # dropout=0.3,
 )
+
 
 trained_model = train(
     model,
