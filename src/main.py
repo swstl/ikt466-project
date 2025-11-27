@@ -47,11 +47,12 @@ else:
 ######################################
 #########  Train the models  #########
 ######################################
-model = create_model("gru_seq2seq.GRU_Seq2Seq",
-    hidden_size=128,
-    num_layers=2,
-    dropout=0.3
+model = create_model("cnn.CNN", #filename.classname
+    # hidden_size=128,
+    # num_layers=2,
+    # dropout=0.3,
 )
+
 
 trained_model = train(
     model,
@@ -62,19 +63,19 @@ trained_model = train(
 
 
 
-quit()
+# quit()
 ############################################
 #########  TESTING THE MODEL HERE  #########
 ############################################
 # model evaluation mode: set model weights
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model.load_state_dict(torch.load('trained/CNN_20251110_122117_95.23.pth', map_location=device))
+model.load_state_dict(torch.load('test_models/CNN_20251112_130409_acc:95.80.pth', map_location=device))
 model.eval()
 
 predicted, confidence = predict(
     model,
     preprocessor,
-    "../data/kramsen/linor-sier-cat.ogg",
+    "../data/kramsen/kramsen-sier-BED.wav",
     threshold=0.02
 )
 
