@@ -20,7 +20,8 @@ Add new packages with:
 uv add <packagename>
 ```
 
-## run the initialisation:
+## run the script:
 ```sh
-uv run python init.py
+cd src/
+uv run main.py
 ```
